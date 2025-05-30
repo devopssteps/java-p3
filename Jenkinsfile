@@ -15,7 +15,11 @@ environment {
                 echo "------------buildc completed------------------"
             }
         }
-        
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t myapp:latest .'
+            }
+        }
         
     }
 }
