@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE = "devopsdemo/demoapp:${BUILD_NUMBER}"
+        //IMAGE = "devopsdemo/demoapp:${BUILD_NUMBER}"
     }
 
     stages {
