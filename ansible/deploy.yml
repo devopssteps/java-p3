@@ -1,0 +1,14 @@
+- hosts: k8s
+  become: yes
+  tasks:
+    - name: Copy Kubernetes deployment files
+      copy:
+        src: ../k8s/
+        dest: /home/ubuntu/k8s/
+        mode: 0755
+        owner: ubuntu
+        group: ubuntu
+
+    - name: Apply Kubernetes deployment
+      shell: kubectl apply -f /home/ubuntu/k8s/
+
