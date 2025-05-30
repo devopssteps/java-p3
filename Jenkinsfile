@@ -1,9 +1,9 @@
 pipeline {
     agent any
 
-    environment {
-        //IMAGE = "devopsdemo/demoapp:${BUILD_NUMBER}"
-    }
+    // environment {
+    //     IMAGE = "devopsdemo/demoapp:${BUILD_NUMBER}"
+    // }
 
     stages {
         stage('Checkout') {
