@@ -1,24 +1,21 @@
 pipeline {
-    agent any
-
-    // environment {
-    //     IMAGE = "devopsdemo/demoapp:${BUILD_NUMBER}"
-    // }
-
+    agent {
+        node {
+            label 'maven'
+        }
+    }
+environment {
+    PATH = "/opt/apache-maven-3.9.9/bin:$PATH"
+}
     stages {
-        stage('Checkout') {
+        stage('build') {
             steps {
-                git 'https://github.com/devopssteps/java-p3.git'
+                echo "-------------build started------------------"
+                sh 'mvn clean deploy -Dmaven.test.skip=true' //-Dmaven.test.skip=true
+                echo "------------buildc completed------------------"
             }
         }
-
         
-
-        
-
-        
-
         
     }
 }
-
