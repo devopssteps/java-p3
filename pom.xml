@@ -12,7 +12,7 @@
 	<artifactId>demo-workshop</artifactId>
 	<version>1.0.0</version>
 	<name>demo-workshop</name>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<description>demo-workshop for Spring Boot</description>
 
 	<properties>
