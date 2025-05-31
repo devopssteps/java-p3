@@ -39,6 +39,7 @@ environment {
         always {
             echo "Cleaning up unused Docker images..."
             sh 'docker image prune -f'
+            sh 'docker logout'
         }
     }
 }
