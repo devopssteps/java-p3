@@ -19,14 +19,14 @@ environment {
         }
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t myapp:latest .'
+                sh 'docker build -t devopssteps/myapp:latest .'
             }
         }
         stage('Login to Docker Hub') {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
-                        echo "Logged into Docker Hub"
+                    echo "Logged into Docker Hub"
                     }
                 }
             }
