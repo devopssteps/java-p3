@@ -35,4 +35,10 @@ environment {
     }
         
     }
+    post {
+        always {
+            echo "Cleaning up unused Docker images..."
+            sh 'docker image prune -f'
+        }
+    }
 }
