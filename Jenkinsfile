@@ -8,6 +8,7 @@ environment {
     PATH = "/opt/apache-maven-3.9.9/bin:$PATH"
     DOCKER_IMAGE = "devopssteps/myapp"
     DOCKER_TAG = "latest"
+    DOCKERHUB_CREDENTIALS = credentials('docker-hub-credential')
 }
     stages {
         stage('build') {
@@ -22,24 +23,16 @@ environment {
                 sh 'docker build -t devopssteps/myapp:latest .'
             }
         }
-        stage('Login to Docker Hub') {
+        stage('Login') {
             steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
-                    echo "Logged into Docker Hub"
-                    }
-                }
-            }
-        }
-        stage('Push Docker Image') {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+      }
+    }
+        stage('Push') {
             steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
-                    docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
-                    }
-                }
-            }
-        }
+                sh 'docker push devopssteps/myapp:latest'
+      }
+    }
         
     }
 }
