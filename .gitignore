@@ -1,0 +1,6 @@
+.vscode/
+target/
+regapp-deploy.yml
+regapp-service.yml
+Shanker-p2-k8s/
+rajiv-k8s/
