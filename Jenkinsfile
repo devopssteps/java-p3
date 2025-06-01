@@ -4,18 +4,18 @@ pipeline {
             label 'maven'
         }
     }
-environment {
-    PATH = "/opt/apache-maven-3.9.9/bin:$PATH"
-    DOCKER_IMAGE = "devopssteps/myapp"
-    DOCKER_TAG = "latest"
-    DOCKERHUB_CREDENTIALS = credentials('docker-hub-credential')
-}
+    environment {
+        PATH = "/opt/apache-maven-3.9.9/bin:$PATH"
+        DOCKER_IMAGE = 'devopssteps/myapp'
+        DOCKER_TAG = 'latest'
+        DOCKERHUB_CREDENTIALS = credentials('docker-hub-credential')
+    }
     stages {
         stage('build') {
             steps {
-                echo "-------------build started------------------"
+                echo '-------------build started------------------'
                 sh 'mvn clean deploy' //-Dmaven.test.skip=true
-                echo "------------buildc completed------------------"
+                echo '------------buildc completed------------------'
             }
         }
         stage('Build Docker Image') {
@@ -26,18 +26,17 @@ environment {
         stage('Login') {
             steps {
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-      }
-    }
+            }
+        }
         stage('Push') {
             steps {
                 sh 'docker push devopssteps/myapp:latest'
-      }
-    }
-        
+            }
+        }
     }
     post {
         always {
-            echo "Cleaning up unused Docker images..."
+            echo 'Cleaning up unused Docker images...'
             sh 'docker image prune -f'
             sh 'docker logout'
         }
