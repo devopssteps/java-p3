@@ -5,7 +5,7 @@ pipeline {
         }
     }
     environment {
-        PATH = "/opt/apache-maven-3.9.9/bin:$PATH"
+        PATH = "/opt/maven/bin:$PATH"
         DOCKER_IMAGE = 'devopssteps/myapp'
         DOCKER_TAG = 'latest'
         DOCKERHUB_CREDENTIALS = credentials('docker-hub-credential')
