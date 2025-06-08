@@ -37,7 +37,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        aws eks update-kubeconfig --region us-east-1 --name devopssteps-eks-01
+                        aws eks update-kubeconfig --region us-east-1 --name devopssteps-eks-01 --profile eks
                         ./k8s/deploy.sh
                     '''
                 }
