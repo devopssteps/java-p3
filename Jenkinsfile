@@ -36,9 +36,11 @@ pipeline {
         stage('deploy to kubernetes') {
             steps {
                 script {
-                   sh './k8s/deploy.sh'     
+                    sh '''
+                        aws eks update-kubeconfig --region us-east-1 --name devopssteps-eks-01
+                        ./k8s/deploy.sh
+                    '''
                 }
-                
             }
         }
     }
