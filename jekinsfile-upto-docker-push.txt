@@ -23,19 +23,14 @@ pipeline {
                 sh 'docker build -t devopssteps/myapp:latest .'
             }
         }
-        stage('Login to dockerhub') {
+        stage('Login') {
             steps {
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
         }
-        stage('Push to dockerhub') {
+        stage('Push') {
             steps {
                 sh 'docker push devopssteps/myapp:latest'
-            }
-        }
-        stage('deploy to kubernetes') {
-            steps {
-                sh './k8s/deploy.sh'
             }
         }
     }
