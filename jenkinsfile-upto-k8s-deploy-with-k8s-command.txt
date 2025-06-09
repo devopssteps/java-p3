@@ -6,10 +6,8 @@ pipeline {
     }
     environment {
         PATH = "/opt/maven/bin:$PATH"
-        //DOCKER_IMAGE = 'devopssteps/myapp'
-        //DOCKER_TAG = 'latest'
-        IMAGE_TAG = "${env.BUILD_NUMBER}"
-        DOCKER_IMAGE = "devopssteps/myapp:${IMAGE_TAG}"
+        DOCKER_IMAGE = 'devopssteps/myapp'
+        DOCKER_TAG = 'latest'
         DOCKERHUB_CREDENTIALS = credentials('docker-hub-credential')
         AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
@@ -25,7 +23,7 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE .' //sh 'docker build -t devopssteps/myapp:latest .'
+                sh 'docker build -t devopssteps/myapp:latest .'
             }
         }
         stage('Login to dockerhub') {
@@ -35,25 +33,23 @@ pipeline {
         }
         stage('Push to dockerhub') {
             steps {
-                sh 'docker push $DOCKER_IMAGE' // sh 'docker push devopssteps/myapp:latest'
+                sh 'docker push devopssteps/myapp:latest'
             }
         }
         stage('deploy to kubernetes') {
             steps {
                 script {
-                    sh "sed -i 's|image: devopssteps/myapp:.*|image: $DOCKER_IMAGE|' k8s/deployment.yaml"
                     sh './k8s/deploy.sh'
                 }
             }
         }
-        // Force k8s container recreate with new docker image
-        // stage('deploy new container with new image to kubernetes') {
-        //     steps {
-        //         script {
-        //             sh 'kubectl rollout restart deployment.apps/myapp-deployment'
-        //         }
-        //     }
-        // }
+        stage('deploy new container with new image to kubernetes') {
+            steps {
+                script {
+                    sh 'kubectl rollout restart deployment.apps/myapp-deployment'
+                }
+            }
+        }
     }
     post {
         always {
