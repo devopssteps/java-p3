@@ -15,6 +15,7 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
         AWS_DEFAULT_REGION = 'us-east-1'
         GIT_CREDENTIALS_ID = 'devopssteps-github-access'  // or GitHub PAT credential ID
+        //ssh_key_build_agent = ''
     }
     stages {
         stage('build') {
@@ -68,16 +69,16 @@ pipeline {
             }
         }
 
-        stage('Push Helm Package to GitHub') {
+        stage('Push Helm Package') {
             steps {
-                sshagent (credentials: [env.GIT_CREDENTIALS_ID]) {
+                sshagent(credentials: ['maven2025']) {
                     sh '''
-                    git config user.email "devopssteps@gmail.com"
-                    git config user.name "devopssteps"
-                    mv helm/*.tgz .
-                    git add *.tgz
-                    git commit -m "Add Helm package for new build"
-                    git push origin main
+                        git config user.email "devopssteps@gmail.com"
+                        git config user.name "Rajiv Siddiqui"
+                        mv helm/*.tgz .
+                        git add *.tgz
+                        git commit -m "Add Helm package for new build"
+                        git push origin main
                     '''
                 }
             }
