@@ -87,7 +87,7 @@ pipeline {
         stage('Deploy to k8s by helm chart') {
             steps {
                 script {
-                    sh 'helm install myapp-v2 myapp-0.1.0.tgz'
+                    sh 'helm install myapp-v2 helm/myapp-0.1.0.tgz'
                 }
             }
         }
