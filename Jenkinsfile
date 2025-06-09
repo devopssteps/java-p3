@@ -80,7 +80,9 @@ pipeline {
                         mv helm/*.tgz .
                         git add *.tgz
                         git commit -m "Add Helm package for new build"
-                        git push origin main
+
+                        # Disable strict host key checking for SSH
+                        GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" git push origin main
                     '''
                 }
             }
