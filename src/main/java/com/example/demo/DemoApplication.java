@@ -14,7 +14,7 @@ public class DemoApplication {
 
     @GetMapping("/")
     public String hello() {
-        return "Hello from DevOps CI/CD Pipeline 1";
+        return "Hello from DevOps CI/CD Pipeline 2";
     }
 }
 
