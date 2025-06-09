@@ -14,7 +14,6 @@ pipeline {
         AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
         AWS_DEFAULT_REGION = 'us-east-1'
-        GIT_CREDENTIALS_ID = 'devopssteps-github-access'  // or GitHub PAT credential ID
     }
     stages {
         stage('build') {
@@ -48,46 +47,13 @@ pipeline {
         //         }
         //     }
         // }
-        
-        //depoly to k8s by helm
-        // stage('Deploy to k8s by helm chart') {
-        //     steps {
-        //         script {
-        //             sh 'helm install myapp-v1 myapp-0.1.0.tgz'
-        //         }
-        //     }
-        // }
-
-        //deploy by helm automatical create package and push to github
-        stage('Package Helm Chart') {
-            steps {
-                dir('helm') {
-                    sh 'helm lint .'
-                    sh 'helm package .'
-                }
-            }
-        }
-
-        stage('Push Helm Package to GitHub') {
-            steps {
-                sshagent (credentials: [env.GIT_CREDENTIALS_ID]) {
-                    sh '''
-                    git config user.email "devopssteps@gmail.com"
-                    git config user.name "devopssteps"
-                    mv helm/*.tgz .
-                    git add *.tgz
-                    git commit -m "Add Helm package for new build"
-                    git push origin main
-                    '''
-                }
-            }
-        }
-
         //depoly to k8s by helm
         stage('Deploy to k8s by helm chart') {
             steps {
                 script {
+                    echo '<--------------- Helm Deploy Started --------------->'
                     sh 'helm install myapp-v1 myapp-0.1.0.tgz'
+                    echo '<--------------- Helm deploy Ends --------------->'
                 }
             }
         }
