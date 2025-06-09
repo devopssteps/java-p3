@@ -43,6 +43,13 @@ pipeline {
                 }
             }
         }
+        stage('deploy new container with new image to kubernetes') {
+            steps {
+                script {
+                    sh 'kubectl rollout restart deployment.apps/myapp-deployment'
+                }
+            }
+        }
     }
     post {
         always {
