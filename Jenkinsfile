@@ -38,14 +38,26 @@ pipeline {
                 sh 'docker push $DOCKER_IMAGE' // sh 'docker push devopssteps/myapp:latest'
             }
         }
-        stage('deploy to kubernetes') {
+        //depoly to k8s by script file
+        // stage('deploy to kubernetes') {
+        //     steps {
+        //         script {
+        //             sh "sed -i 's|image: devopssteps/myapp:.*|image: $DOCKER_IMAGE|' k8s/deployment.yaml"
+        //             sh './k8s/deploy.sh'
+        //         }
+        //     }
+        // }
+        //depoly to k8s by helm
+        stage('Deploy to k8s by helm chart') {
             steps {
                 script {
-                    sh "sed -i 's|image: devopssteps/myapp:.*|image: $DOCKER_IMAGE|' k8s/deployment.yaml"
-                    sh './k8s/deploy.sh'
+                    echo '<--------------- Helm Deploy Started --------------->'
+                    sh 'helm install myapp-v1 myapp-0.1.0.tgz'
+                    echo '<--------------- Helm deploy Ends --------------->'
                 }
             }
         }
+
         // Force k8s container recreate with new docker image
         // stage('deploy new container with new image to kubernetes') {
         //     steps {
