@@ -73,6 +73,7 @@ pipeline {
             steps {
                 sshagent(credentials: ['maven2025']) {
                     sh '''
+                        git checkout main || git checkout -b main
                         git config user.email "devopssteps@gmail.com"
                         git config user.name "Rajiv Siddiqui"
                         mv helm/*.tgz .
