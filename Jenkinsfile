@@ -6,16 +6,12 @@ pipeline {
     }
     environment {
         PATH = "/opt/maven/bin:$PATH"
-        //DOCKER_IMAGE = 'devopssteps/myapp'
-        //DOCKER_TAG = 'latest'
-        IMAGE_TAG = "${env.BUILD_NUMBER}"
-        DOCKER_IMAGE = "devopssteps/myapp:${IMAGE_TAG}"
+        DOCKER_IMAGE = 'devopssteps/myapp'
+        DOCKER_TAG = 'latest'
         DOCKERHUB_CREDENTIALS = credentials('docker-hub-credential')
         AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
         AWS_DEFAULT_REGION = 'us-east-1'
-        GIT_CREDENTIALS_ID = 'devopssteps-github-access'  // or GitHub PAT credential ID
-        //ssh_key_build_agent = ''
     }
     stages {
         stage('build') {
@@ -27,7 +23,7 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE .' //sh 'docker build -t devopssteps/myapp:latest .'
+                sh 'docker build -t devopssteps/myapp:latest .'
             }
         }
         stage('Login to dockerhub') {
@@ -37,74 +33,23 @@ pipeline {
         }
         stage('Push to dockerhub') {
             steps {
-                sh 'docker push $DOCKER_IMAGE' // sh 'docker push devopssteps/myapp:latest'
+                sh 'docker push devopssteps/myapp:latest'
             }
         }
-        //depoly to k8s by script file
-        // stage('deploy to kubernetes') {
-        //     steps {
-        //         script {
-        //             sh "sed -i 's|image: devopssteps/myapp:.*|image: $DOCKER_IMAGE|' k8s/deployment.yaml"
-        //             sh './k8s/deploy.sh'
-        //         }
-        //     }
-        // }
-        
-        //depoly to k8s by helm
-        // stage('Deploy to k8s by helm chart') {
-        //     steps {
-        //         script {
-        //             sh 'helm install myapp-v1 myapp-0.1.0.tgz'
-        //         }
-        //     }
-        // }
-
-        //deploy by helm automatical create package and push to github
-        stage('Package Helm Chart') {
-            steps {
-                dir('helm') {
-                    sh 'helm lint .'
-                    sh 'helm package .'
-                }
-            }
-        }
-
-        stage('Push Helm Package') {
-            steps {
-                sshagent(credentials: ['maven2025']) {
-                    sh '''
-                        git remote set-url origin git@github.com:devopssteps/java-p3.git
-                        git checkout main || git checkout -b main
-                        git config user.email "devopssteps@gmail.com"
-                        git config user.name "Rajiv Siddiqui"
-                        mv helm/*.tgz .
-                        git add *.tgz
-                        git commit -m "Add Helm package for new build"
-
-                        # Disable strict host key checking for SSH
-                        GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" git push origin main
-                    '''
-                }
-            }
-        }
-
-        //depoly to k8s by helm
-        stage('Deploy to k8s by helm chart') {
+        stage('deploy to kubernetes') {
             steps {
                 script {
-                    sh 'helm install myapp-v2 helm/myapp-0.1.0.tgz'
+                    sh './k8s/deploy.sh'
                 }
             }
         }
-
-        // Force k8s container recreate with new docker image
-        // stage('deploy new container with new image to kubernetes') {
-        //     steps {
-        //         script {
-        //             sh 'kubectl rollout restart deployment.apps/myapp-deployment'
-        //         }
-        //     }
-        // }
+        stage('deploy new container with new image to kubernetes') {
+            steps {
+                script {
+                    sh 'kubectl rollout restart deployment.apps/myapp-deployment'
+                }
+            }
+        }
     }
     post {
         always {
